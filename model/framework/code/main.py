@@ -3,8 +3,12 @@ import os
 import csv
 import joblib
 import sys
-from rdkit import Chem
-from rdkit.Chem.Descriptors import MolWt
+import numpy as np
+import gzip
+import yaml
+from pathlib import Path
+from .model import make_ae_model  ## fix path 
+from data_preprocess import _normalize
 
 # parse arguments
 input_file = sys.argv[1]
@@ -13,28 +17,38 @@ output_file = sys.argv[2]
 # current file directory
 root = os.path.dirname(os.path.abspath(__file__))
 
-# checkpoints directory
-checkpoints_dir = os.path.abspath(os.path.join(root, "..", "..", "checkpoints"))
+# generate descriptors
+with open(input_file,'r') as f1, open('smiles.txt','w') as f2:
+    next(f1)
+    for line in f1:
+        f2.write(line)
+        
+vectorize_script_path = os.path.abspath(os.path.join(root, "..", "model/scripts/vectorize.py"))
+command = "python " + vectorize_script_path + " --output_core smiles --descriptor rdkit " + input_file
+os.system(command)
 
-# read checkpoints (here, simply an integer number: 42)
-ckpt = joblib.load(os.path.join(checkpoints_dir, "checkpoints.joblib"))
+with gzip.open('smiles.npz', 'rb') as f:
+      data = np.load(f)
+        
+data_path = os.path.abspath(os.path.join(root, "..", "model/data/"))       
+idx = ( data_path + 'zinc15_nondrugs_sample_rdkit_mu.npz', data_path + 'zinc15_nondrugs_sample_rdkit_std.npz', data_path + 'zinc15_nondrugs_sample_rdkit_idx.npz')
+x = _normalize(data, idx, True)
 
-# model to be run (here, calculate the Molecular Weight and add ckpt (42) to it)
-def my_model(smiles_list, ckpt):
-    return [MolWt(Chem.MolFromSmiles(smi))+ckpt for smi in smiles_list]
-    
-# read SMILES from .csv file, assuming one column with header
-with open(input_file, "r") as f:
-    reader = csv.reader(f)
-    next(reader) # skip header
-    smiles_list = [r[0] for r in reader]
-    
+#load model 
+config_path =  os.path.abspath(os.path.join(root, "..", "model/config_files/rdkit_ae_zinc_bayesian.yaml")
+config = yaml.safe_load(config_path.read_text())
+config = config['model_params']
+input_shape = 199  
+output_shape = (1,2)
+model, metric = make_ae_model(input_shape, output_shape, config)
+   
 # run model
-outputs = my_model(smiles_list, ckpt)
+proba = model.predict(x)  # slice data, run predictions in a loop
+pos_class_proba = [[proba[:,1].tolist()[i]] for i in range(0, len(proba))]
 
-# write output in a .csv file
-with open(output_file, "w") as f:
-    writer = csv.writer(f)
-    writer.writerow(["value"]) # header
-    for o in outputs:
-        writer.writerow([o])
+# write output in a .csv file        
+header = ['drug-likeness']  
+with open(output_file, 'w') as f:
+    write = csv.writer(f)
+    write.writerow(header)
+    write.writerows(pos_class_proba)

@@ -6,7 +6,7 @@ import numpy as np
 import gzip
 import yaml
 from pathlib import Path
-from .model import make_ae_model  ## fix path 
+from .model.models import make_ae_model  ## fix path 
 from data_preprocess import _normalize
 
 # parse arguments

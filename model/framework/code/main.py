@@ -35,7 +35,7 @@ idx = ( data_path + 'zinc15_nondrugs_sample_rdkit_mu.npz', data_path + 'zinc15_n
 x = _normalize(data, idx, True)
 
 #load model 
-config_path =  os.path.abspath(os.path.join(root, "..", "model/config_files/rdkit_ae_zinc_bayesian.yaml")
+config_path =  os.path.abspath(os.path.join(root, "..", "model/config_files/rdkit_ae_zinc_bayesian.yaml"))
 config = yaml.safe_load(config_path.read_text())
 config = config['model_params']
 input_shape = 199  

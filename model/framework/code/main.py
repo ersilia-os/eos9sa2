@@ -21,25 +21,29 @@ output_file = sys.argv[2]
 root = os.path.dirname(os.path.abspath(__file__))
 
 # generate descriptors
-with open(input_file,'r') as f1, open('smiles.txt','w') as f2:
-    next(f1)
-    for line in f1:
-        f2.write(line)
-        
+f = open(input_file,'r')
+lines = f.readlines()[1:]
+f.close()
+
+with open('temp.txt', 'w') as f:
+      for line in lines:
+            f.write(line)
+
+data_path = os.path.abspath(os.path.join(root, "..", "model/data"))     
 vectorize_script_path = os.path.abspath(os.path.join(root, "..", "model/scripts/vectorize.py"))
-command = "python " + vectorize_script_path + " --output_core smiles --descriptor rdkit " + input_file
+command = "python " + vectorize_script_path + " --output_core " + data_path+"/smiles --descriptor rdkit temp.txt"
 os.system(command)
 
-with gzip.open('smiles.npz', 'rb') as f:
+with gzip.open(data_path+"/smiles.npz", 'rb') as f:
       data = np.load(f)
-        
-data_path = os.path.abspath(os.path.join(root, "..", "model/data/"))       
-idx = ( data_path + 'zinc15_nondrugs_sample_rdkit_mu.npz', data_path + 'zinc15_nondrugs_sample_rdkit_std.npz', data_path + 'zinc15_nondrugs_sample_rdkit_idx.npz')
+
+idx = ( data_path + '/zinc15_nondrugs_sample_rdkit_mu.npz', data_path + '/zinc15_nondrugs_sample_rdkit_std.npz', data_path + '/zinc15_nondrugs_sample_rdkit_idx.npz')
 x = _normalize(data, idx, True)
 
 #load model 
+
 config_path =  os.path.abspath(os.path.join(root, "..", "model/config_files/rdkit_ae_zinc_bayesian.yaml"))
-config = yaml.safe_load(config_path.read_text())
+config = yaml.safe_load(Path(config_path).read_text())
 config = config['model_params']
 input_shape = 199  
 output_shape = (1,2)

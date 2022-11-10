@@ -6,8 +6,12 @@ import numpy as np
 import gzip
 import yaml
 from pathlib import Path
-from model.models import make_ae_model   
-from model.data_preprocess import _normalize
+
+ROOT = os.path.abspath(os.path.dirname(__file__))
+code_path = os.path.abspath(os.path.join(ROOT, "..", "model"))
+sys.path.append(code_path)
+from models import make_ae_model   
+from data_preprocess import _normalize
 
 # parse arguments
 input_file = sys.argv[1]

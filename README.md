@@ -18,6 +18,7 @@ Beker, W., Wołos, A., Szymkuć, S. et al. Minimal-uncertainty prediction of gen
 - Checkpoints: include the link to the checkpoints used if model is a pretrained model
 
 # License
+The GPL-v3 license applies to all parts of the repository that are not externally maintained libraries.
 
 # History 
 - Model was re-trained using data and code available at [source](https://github.com/Nanotekton/drugability) repository.

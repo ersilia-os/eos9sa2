@@ -37,9 +37,10 @@ os.system(command)
 with gzip.open(data_path+"/smiles.npz", 'rb') as f:
       data = np.load(f)
 
+print("Data before normalization",data.shape)
 idx = ( data_path + '/zinc15_nondrugs_sample_rdkit_mu.npz', data_path + '/zinc15_nondrugs_sample_rdkit_std.npz', data_path + '/zinc15_nondrugs_sample_rdkit_idx.npz')
 x = _normalize(data, idx, True)
-
+print("Data after normalization",x.shape)
 #load model 
 
 config_path =  os.path.abspath(os.path.join(root, "..", "model/config_files/rdkit_ae_zinc_bayesian.yaml"))

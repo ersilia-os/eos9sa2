@@ -26,5 +26,10 @@
     "Publication": "https://www.nature.com/articles/s42256-020-0209-y",
     "Source Code": "https://github.com/Nanotekton/drugability/tree/v0.1",
     "License": "Non-commercial",
-    "Contributor": "Amna-28"
+    "Contributor": "Amna-28",
+    "S3": "https://ersilia-models-zipped.s3.eu-central-1.amazonaws.com/eos9sa2.zip",
+    "DockerHub": "https://hub.docker.com/r/ersiliaos/eos9sa2",
+    "Docker Architecture": [
+        "AMD64"
+    ]
 }

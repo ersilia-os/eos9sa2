@@ -23,6 +23,11 @@ To define drug-likeness, a set of 2136 approved drugs from DrugBank was taken as
 * [Source Code](https://github.com/Nanotekton/drugability/tree/v0.1)
 * Ersilia contributor: [Amna-28](https://github.com/Amna-28)
 
+## Ersilia model URLs
+* [GitHub](https://github.com/ersilia-os/eos9sa2)
+* [AWS S3](https://ersilia-models-zipped.s3.eu-central-1.amazonaws.com/eos9sa2.zip)
+* [DockerHub](https://hub.docker.com/r/ersiliaos/eos9sa2) (AMD64)
+
 ## Citation
 
 If you use this model, please cite the [original authors](https://www.nature.com/articles/s42256-020-0209-y) of the model and the [Ersilia Model Hub](https://github.com/ersilia-os/ersilia/blob/master/CITATION.cff).

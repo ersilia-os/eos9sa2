@@ -55,7 +55,7 @@ proba = model.predict(x)  # slice data, run predictions in a loop
 pos_class_proba = [[proba[:,1].tolist()[i]] for i in range(0, len(proba))]
 
 # write output in a .csv file        
-header = ['drug-likeness']  
+header = ['drug_likeness']  
 with open(output_file, 'w') as f:
     write = csv.writer(f)
     write.writerow(header)

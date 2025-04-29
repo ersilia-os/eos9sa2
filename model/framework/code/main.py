@@ -21,13 +21,14 @@ output_file = sys.argv[2]
 root = os.path.dirname(os.path.abspath(__file__))
 
 # generate descriptors
-f = open(input_file,'r')
-lines = f.readlines()[1:]
-f.close()
+with open(input_file, "r") as f:
+    reader = csv.reader(f)
+    next(reader)  # skip header
+    smiles_list = [r[0] for r in reader]
 
 with open('temp.txt', 'w') as f:
-      for line in lines:
-            f.write(line)
+      for line in smiles_list:
+            f.write(line+'\n')
 
 data_path = os.path.abspath(os.path.join(root, "..", "model/data"))     
 vectorize_script_path = os.path.abspath(os.path.join(root, "..", "model/scripts/vectorize.py"))
@@ -53,6 +54,7 @@ model, metric = make_ae_model(input_shape, output_shape, config)
 # run model
 proba = model.predict(x)  # slice data, run predictions in a loop
 pos_class_proba = [[proba[:,1].tolist()[i]] for i in range(0, len(proba))]
+
 
 # write output in a .csv file        
 header = ['drug_likeness']  
